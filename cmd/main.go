@@ -3,5 +3,5 @@ package main
 import "fmt"
 
 func main() {
-	fmt.Println("install Dependencies")
+	fmt.Println("structur project")
 }
