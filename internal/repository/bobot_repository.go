@@ -4,6 +4,7 @@ import (
 	"go-tc-plnsmrng/internal/models"
 
 	"github.com/jmoiron/sqlx"
+	"database/sql"
 )
 
 type BobotRepository struct {
@@ -24,4 +25,19 @@ func (r *BobotRepository) GetAllBobots() ([]models.Bobot, error) {
 	query := "SELECT id, parent_id, nama, nomor FROM bobot ORDER BY nomor ASC"
 	err := r.db.Select(&bobots, query)
 	return bobots, err
+}
+
+func (r *BobotRepository) GetBobotByNomor(nomor string) (*models.Bobot, error) {
+	var bobot models.Bobot
+	query := "SELECT id, parent_id, nama, nomor FROM bobot WHERE nomor = $1"
+	err := r.db.Get(&bobot, query, nomor)
+
+	// Jika tidak ditemukan, kembalikan nil tanpa error
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &bobot, nil
 }
