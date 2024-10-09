@@ -13,6 +13,8 @@ type BobotSpec struct {
 }
 
 type BobotResponse struct {
-	Nama  string `json:"nama"`
-	Nomor string `json:"nomor"`
+	ID       string `json:"id"`
+	Nama     string `json:"nama"`
+	Nomor    string `json:"nomor"`
+	ParentID *int   `json:"parent_id"`
 }
