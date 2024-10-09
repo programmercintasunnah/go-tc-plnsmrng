@@ -10,6 +10,17 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
+// Struktur Proyek:
+// /bobot-service
+//   ├── /main.go			   # Entry point
+//   ├── /internal
+//   │     ├── /handlers       # HTTP handlers
+//   │     ├── /models         # Model struct
+//   │     └── /repository     # DB interactions
+//   ├── /config
+//   │     └── /config.go      # Database and JWT config
+//   └── /migrations           # DB migration scripts
+
 func main() {
 	cfg := config.NewConfig()
 	repo := repository.NewBobotRepository(cfg.DB)
