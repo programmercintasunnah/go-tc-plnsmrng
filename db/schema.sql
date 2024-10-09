@@ -20,7 +20,7 @@ SET default_table_access_method = heap;
 CREATE TABLE public.bobot (
     id integer NOT NULL,
     parent_id integer,
-    name character varying(255) NOT NULL,
+    nama character varying(255) NOT NULL,
     nomor character varying(50) NOT NULL
 );
 

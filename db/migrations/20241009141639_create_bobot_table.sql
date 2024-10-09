@@ -2,7 +2,7 @@
 CREATE TABLE IF NOT EXISTS bobot (
     id SERIAL PRIMARY KEY,
     parent_id INT,
-    name VARCHAR(255) NOT NULL,
+    nama VARCHAR(255) NOT NULL,
     nomor VARCHAR(50) NOT NULL
 );
 

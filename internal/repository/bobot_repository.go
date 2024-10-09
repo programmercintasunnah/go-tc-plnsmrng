@@ -21,6 +21,7 @@ func (r *BobotRepository) CreateBobot(bobot *models.Bobot) error {
 
 func (r *BobotRepository) GetAllBobots() ([]models.Bobot, error) {
 	var bobots []models.Bobot
-	err := r.db.Select(&bobots, "SELECT * FROM bobot ORDER BY nomor ASC")
+	query := "SELECT id, parent_id, nama, nomor FROM bobot ORDER BY nomor ASC"
+	err := r.db.Select(&bobots, query)
 	return bobots, err
 }
