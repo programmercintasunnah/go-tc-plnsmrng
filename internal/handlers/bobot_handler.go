@@ -5,6 +5,7 @@ import (
 	"go-tc-plnsmrng/internal/models"
 	"go-tc-plnsmrng/internal/repository"
 	"net/http"
+	"regexp"
 	"strings"
 )
 
@@ -26,6 +27,13 @@ func (h *BobotHandler) CreateBobot(w http.ResponseWriter, r *http.Request) {
 	// Validasi nomor yang diinput
 	if bobotSpec.Nomor == "" || bobotSpec.Nomor[len(bobotSpec.Nomor)-1] == '.' {
 		http.Error(w, "Nomor tidak boleh kosong atau diakhiri dengan titik.", http.StatusBadRequest)
+		return
+	}
+
+	// Cek apakah nomor hanya terdiri dari angka dan titik
+	validNomor := regexp.MustCompile(`^(\d+(\.\d+)*)?$`)
+	if !validNomor.MatchString(bobotSpec.Nomor) {
+		http.Error(w, "Nomor harus berupa angka yang valid (contoh: 1, 1.1, 2.3)", http.StatusBadRequest)
 		return
 	}
 
@@ -84,8 +92,6 @@ func (h *BobotHandler) CreateBobot(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(bobotResponse)
 }
-
-
 
 func (h *BobotHandler) GetAllBobots(w http.ResponseWriter, r *http.Request) {
 	bobots, err := h.repo.GetAllBobots()
