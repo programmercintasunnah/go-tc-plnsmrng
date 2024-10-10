@@ -46,25 +46,29 @@
 // 	log.Fatal(http.ListenAndServe(":8080", r))
 // }
 
-package handler
+// // Handler untuk endpoint utama
+// func handler(w http.ResponseWriter, r *http.Request) {
+// 	fmt.Fprintln(w, "Hello, World!")
+// }
+
+// // Fungsi utama yang diekspor untuk Vercel
+// func VercelHandler(w http.ResponseWriter, r *http.Request) {
+// 	handler(w, r)
+// }
+
+package main
 
 import (
-    "fmt"
-    "net/http"
+	"fmt"
+	"go-tc-plnsmrng/api"
+	"net/http"
 )
 
-// Handler untuk endpoint utama
-func handler(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprintln(w, "Hello, World!")
-}
-
-// Fungsi utama yang diekspor untuk Vercel
-func VercelHandler(w http.ResponseWriter, r *http.Request) {
-    handler(w, r)
-}
-
-// Fungsi yang diekspor ke Vercel
 func main() {
-    http.HandleFunc("/", VercelHandler)
-    http.ListenAndServe(":3000", nil)
+	// Set up the HTTP server and routes for local development
+	http.HandleFunc("/", api.MainHandler) // Use your handler from the api package
+	fmt.Println("Starting server on :3000")
+	if err := http.ListenAndServe(":3000", nil); err != nil {
+		fmt.Printf("Error starting server: %v\n", err)
+	}
 }

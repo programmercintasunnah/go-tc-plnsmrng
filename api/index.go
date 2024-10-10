@@ -1,7 +1,8 @@
-package handlers
+package api
 
 import (
 	"go-tc-plnsmrng/config"
+	"go-tc-plnsmrng/internal/handlers"
 	"go-tc-plnsmrng/internal/repository"
 	"net/http"
 
@@ -9,11 +10,12 @@ import (
 	"github.com/go-chi/cors"
 )
 
-func Handler(w http.ResponseWriter, r *http.Request) {
-	// Konfigurasi aplikasi
+// MainHandler is the exported function that Vercel will call
+func MainHandler(w http.ResponseWriter, r *http.Request) {
+	// Initialize the application configuration
 	cfg := config.NewConfig()
 	repo := repository.NewBobotRepository(cfg.DB)
-	bobotHandler := NewBobotHandler(repo)
+	bobotHandler := handlers.NewBobotHandler(repo)
 
 	router := chi.NewRouter()
 
@@ -27,8 +29,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		MaxAge:           300,
 	}))
 
+	// Define routes
 	router.Post("/api/bobot", bobotHandler.CreateBobot)
 	router.Get("/api/bobots", bobotHandler.GetAllBobots)
 
+	// Serve HTTP using Chi router
 	router.ServeHTTP(w, r)
 }
