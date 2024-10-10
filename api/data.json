@@ -1,0 +1,12 @@
+[
+    {
+        "id": 1,
+        "name": "Bobot A",
+        "value": 10.5
+    },
+    {
+        "id": 2,
+        "name": "Bobot B",
+        "value": 15.2
+    }
+]
