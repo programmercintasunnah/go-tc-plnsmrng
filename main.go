@@ -1,4 +1,4 @@
-package main
+package handler
 
 import (
 	"fmt"
@@ -24,7 +24,7 @@ func main() {
 
 // Handler untuk endpoint utama
 func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "Hello, World!")
+	fmt.Fprintln(w, "Hello, BobotApp With Golang!")
 }
 
 // Fungsi utama yang diekspor untuk Vercel
