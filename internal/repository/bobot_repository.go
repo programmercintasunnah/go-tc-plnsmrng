@@ -22,10 +22,17 @@ func (r *BobotRepository) CreateBobot(bobot *models.Bobot) error {
 
 func (r *BobotRepository) GetAllBobots() ([]models.Bobot, error) {
 	var bobots []models.Bobot
-	query := "SELECT id, parent_id, nama, nomor FROM bobot ORDER BY nomor ASC"
+	query := `
+		SELECT id, parent_id, nama, nomor
+		FROM bobot
+		ORDER BY 
+			string_to_array(nomor, '.')::int[]
+		ASC
+	`
 	err := r.db.Select(&bobots, query)
 	return bobots, err
 }
+
 
 func (r *BobotRepository) GetBobotByNomor(nomor string) (*models.Bobot, error) {
 	var bobot models.Bobot
