@@ -46,7 +46,7 @@
 // 	log.Fatal(http.ListenAndServe(":8080", r))
 // }
 
-package main
+package handler
 
 import (
     "go-tc-plnsmrng/config"
