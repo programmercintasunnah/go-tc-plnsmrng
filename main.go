@@ -49,35 +49,45 @@
 package handler
 
 import (
-    "go-tc-plnsmrng/config"
-    "go-tc-plnsmrng/internal/handlers"
-    "go-tc-plnsmrng/internal/repository"
-    "net/http"
+	"go-tc-plnsmrng/config"
+	"go-tc-plnsmrng/internal/handlers"
+	"go-tc-plnsmrng/internal/repository"
+	"log"
+	"net/http"
+	"os"
 
-    "github.com/go-chi/chi"
-    "github.com/go-chi/cors"
+	"github.com/go-chi/chi"
+	"github.com/go-chi/cors"
 )
 
-// Ekspor fungsi Handler yang akan dipanggil oleh Vercel
-func Handler(w http.ResponseWriter, r *http.Request) {
-    cfg := config.NewConfig()
-    repo := repository.NewBobotRepository(cfg.DB)
-    bobotHandler := handlers.NewBobotHandler(repo)
+func main() {
+	// Konfigurasi aplikasi
+	cfg := config.NewConfig()
+	repo := repository.NewBobotRepository(cfg.DB)
+	bobotHandler := handlers.NewBobotHandler(repo)
 
-    r := chi.NewRouter()
+	router := chi.NewRouter()
 
-    // Middleware CORS
-    r.Use(cors.Handler(cors.Options{
-        AllowedOrigins:   []string{"*"},
-        AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE"},
-        AllowedHeaders:   []string{"Content-Type", "Authorization"},
-        ExposedHeaders:   []string{"Link"},
-        AllowCredentials: false,
-        MaxAge:           300,
-    }))
+	// Middleware CORS
+	router.Use(cors.Handler(cors.Options{
+		AllowedOrigins:   []string{"*"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE"},
+		AllowedHeaders:   []string{"Content-Type", "Authorization"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: false,
+		MaxAge:           300,
+	}))
 
-    r.Post("/api/bobot", bobotHandler.CreateBobot)
-    r.Get("/api/bobots", bobotHandler.GetAllBobots)
+	router.Post("/api/bobot", bobotHandler.CreateBobot)
+	router.Get("/api/bobots", bobotHandler.GetAllBobots)
 
-    r.ServeHTTP(w, r)
+	// Ambil port dari environment variable, fallback ke 3000 jika tidak ada
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "3000" // Port default jika PORT tidak diset
+	}
+
+	log.Println("Starting server on port " + port)
+	log.Fatal(http.ListenAndServe(":"+port, router))
 }
+
