@@ -49,45 +49,22 @@
 package handler
 
 import (
-	"go-tc-plnsmrng/config"
-	"go-tc-plnsmrng/internal/handlers"
-	"go-tc-plnsmrng/internal/repository"
-	"net/http"
-	"os"
-	"log"
-
-	"github.com/go-chi/chi"
-	"github.com/go-chi/cors"
+    "fmt"
+    "net/http"
 )
 
-func Handler(w http.ResponseWriter, r *http.Request) {
-	cfg := config.NewConfig()
-	repo := repository.NewBobotRepository(cfg.DB)
-	bobotHandler := handlers.NewBobotHandler(repo)
-
-	router := chi.NewRouter()
-
-	// Middleware CORS
-	router.Use(cors.Handler(cors.Options{
-		AllowedOrigins:   []string{"*"},
-		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE"},
-		AllowedHeaders:   []string{"Content-Type", "Authorization"},
-		ExposedHeaders:   []string{"Link"},
-		AllowCredentials: false,
-		MaxAge:           300,
-	}))
-
-	router.Post("/api/bobot", bobotHandler.CreateBobot)
-	router.Get("/api/bobots", bobotHandler.GetAllBobots)
-
-	router.ServeHTTP(w, r)
+// Handler untuk endpoint utama
+func handler(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintln(w, "Hello, World!")
 }
 
+// Fungsi utama yang diekspor untuk Vercel
+func VercelHandler(w http.ResponseWriter, r *http.Request) {
+    handler(w, r)
+}
+
+// Fungsi yang diekspor ke Vercel
 func main() {
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "3000"
-	}
-	log.Fatal(http.ListenAndServe(":"+port, http.HandlerFunc(Handler)))
+    http.HandleFunc("/", VercelHandler)
+    http.ListenAndServe(":3000", nil)
 }
-
