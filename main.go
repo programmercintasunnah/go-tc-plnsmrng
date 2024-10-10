@@ -54,13 +54,13 @@ import (
 	"go-tc-plnsmrng/internal/repository"
 	"net/http"
 	"os"
+	"log"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {
-	// Konfigurasi aplikasi
 	cfg := config.NewConfig()
 	repo := repository.NewBobotRepository(cfg.DB)
 	bobotHandler := handlers.NewBobotHandler(repo)
@@ -80,7 +80,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	router.Post("/api/bobot", bobotHandler.CreateBobot)
 	router.Get("/api/bobots", bobotHandler.GetAllBobots)
 
-	// Arahkan permintaan ke router
 	router.ServeHTTP(w, r)
+}
+
+func main() {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "3000"
+	}
+	log.Fatal(http.ListenAndServe(":"+port, http.HandlerFunc(Handler)))
 }
 
