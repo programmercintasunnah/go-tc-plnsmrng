@@ -10,14 +10,12 @@ import (
 	"github.com/go-chi/cors"
 )
 
-// MainHandler is the exported function that Vercel will call
-func MainHandler(w http.ResponseWriter, r *http.Request) {
+// SetupRoutes sets up the API routes
+func SetupRoutes(router *chi.Mux) {
 	// Initialize the application configuration
 	cfg := config.NewConfig()
 	repo := repository.NewBobotRepository(cfg.DB)
 	bobotHandler := handlers.NewBobotHandler(repo)
-
-	router := chi.NewRouter()
 
 	// Middleware CORS
 	router.Use(cors.Handler(cors.Options{
@@ -32,7 +30,9 @@ func MainHandler(w http.ResponseWriter, r *http.Request) {
 	// Define routes
 	router.Post("/api/bobot", bobotHandler.CreateBobot)
 	router.Get("/api/bobots", bobotHandler.GetAllBobots)
+}
 
-	// Serve HTTP using Chi router
-	router.ServeHTTP(w, r)
+// MainHandler is the entry point for AWS Lambda
+func MainHandler(w http.ResponseWriter, r *http.Request) {
+	// This function can remain empty or be used for Lambda specific handling
 }

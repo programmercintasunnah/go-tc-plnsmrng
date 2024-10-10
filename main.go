@@ -62,13 +62,27 @@ import (
 	"fmt"
 	"go-tc-plnsmrng/api"
 	"net/http"
+	"os"
+
+	"github.com/akrylysov/algnhsa"
+	"github.com/go-chi/chi"
 )
 
 func main() {
-	// Set up the HTTP server and routes for local development
-	http.HandleFunc("/", api.MainHandler) // Use your handler from the api package
-	fmt.Println("Starting server on :3000")
-	if err := http.ListenAndServe(":3000", nil); err != nil {
-		fmt.Printf("Error starting server: %v\n", err)
+	// Initialize the router
+	r := chi.NewRouter()
+	api.SetupRoutes(r) // Set up the API routes
+
+	// Check if running in AWS Lambda environment
+	if _, ok := os.LookupEnv("_LAMBDA_SERVER_PORT"); ok {
+		// Use algnhsa to listen and serve for AWS Lambda
+		algnhsa.ListenAndServe(r, nil)
+	} else {
+		// Run a local HTTP server for development
+		httpPort := ":3000"
+		fmt.Printf("Starting server on %s\n", httpPort)
+		if err := http.ListenAndServe(httpPort, r); err != nil {
+			fmt.Printf("Error starting server on %s: %v\n", httpPort, err)
+		}
 	}
 }
