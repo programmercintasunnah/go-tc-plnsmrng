@@ -52,7 +52,6 @@ import (
 	"go-tc-plnsmrng/config"
 	"go-tc-plnsmrng/internal/handlers"
 	"go-tc-plnsmrng/internal/repository"
-	"log"
 	"net/http"
 	"os"
 
@@ -60,7 +59,7 @@ import (
 	"github.com/go-chi/cors"
 )
 
-func main() {
+func Handler(w http.ResponseWriter, r *http.Request) {
 	// Konfigurasi aplikasi
 	cfg := config.NewConfig()
 	repo := repository.NewBobotRepository(cfg.DB)
@@ -81,13 +80,7 @@ func main() {
 	router.Post("/api/bobot", bobotHandler.CreateBobot)
 	router.Get("/api/bobots", bobotHandler.GetAllBobots)
 
-	// Ambil port dari environment variable, fallback ke 3000 jika tidak ada
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "3000" // Port default jika PORT tidak diset
-	}
-
-	log.Println("Starting server on port " + port)
-	log.Fatal(http.ListenAndServe(":"+port, router))
+	// Arahkan permintaan ke router
+	router.ServeHTTP(w, r)
 }
 
